@@ -5,27 +5,17 @@ reports/
 # cruft
 *.rej
 
-# Data
-*.csv*
-*.dat*
-*.pickle*
-*.xls*
-*.zip*
-data/
-
 # direnv
 .envrc
 
 # dotenv
-.env
+{{ ".env" }}
 
 # Hypothesis
 .hypothesis/
 
 # Jupyter
-*.ipynb
 .ipynb_checkpoints/
-notebooks/
 
 # macOS
 .DS_Store
