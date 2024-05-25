@@ -23,7 +23,10 @@ services:
     {%- endif %}
     volumes:
       - ..:/workspaces
-      - command-history-volume:/home/user/.history/
+    {%- if cookiecutter.with_postgresql %}
+    networks:
+      - net
+    {%- endif %}
 
   dev:
     extends: devcontainer
@@ -69,12 +72,47 @@ services:
     profiles:
       - app
   {%- endif %}
+  {%- if cookiecutter.with_postgresql %}
+
+  {{ cookiecutter.postgresql_server }}:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - {{ cookiecutter.postgresql_server }}:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:{{ cookiecutter.postgresql_forward_port }}:5432"
+    networks:
+      - net
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DB_NAME}
+  {%- endif %}
+  {%- if cookiecutter.with_adminer %}
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    depends_on:
+      - {{ cookiecutter.postgresql_server }}
+    ports:
+      - "127.0.0.1:{{ cookiecutter.adminer_forward_port }}:8080"
+    networks:
+      - net
+    environment:
+      ADMINER_DEFAULT_SERVER: {{ cookiecutter.postgresql_server }}
+  {%- endif %}
 {%- if cookiecutter.private_package_repository_name %}
 
 secrets:
   poetry-auth:
     file: "${POETRY_AUTH_TOML_PATH:-~/Library/Application Support/pypoetry/auth.toml}"
 {%- endif %}
+{%- if cookiecutter.with_postgresql %}
 
 volumes:
-  command-history-volume:
+  {{ cookiecutter.postgresql_server }}:
+
+networks:
+  net:
+{%- endif %}

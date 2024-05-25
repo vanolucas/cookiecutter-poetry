@@ -1,8 +1,8 @@
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url={{ cookiecutter.project_url.replace("https://", "git@").replace(".com/", ".com:") if cookiecutter.private_package_repository_url else cookiecutter.project_url }}){% if cookiecutter.continuous_integration == "GitHub" %} [![Open in GitHub Codespaces](https://img.shields.io/static/v1?label=GitHub%20Codespaces&message=Open&color=blue&logo=github)](https://github.com/codespaces/new/{{ cookiecutter.project_url.replace("https://github.com/", "") }}){% endif %}
-
 # {{ cookiecutter.project_name }}
 
 {{ cookiecutter.project_description }}
+
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url={{ cookiecutter.project_url.replace("https://", "git@").replace(".com/", ".com:") if cookiecutter.private_package_repository_url else cookiecutter.project_url }})
 {%- if cookiecutter.project_type == "package" or cookiecutter.with_typer_cli|int %}
 
 ## Installing
@@ -58,11 +58,6 @@ import {{ cookiecutter.__project_name_snake_case }}
 <details>
 <summary>1. Set up Git to use SSH</summary>
 
-{% if cookiecutter.continuous_integration == "GitLab" -%}
-1. [Generate an SSH key](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair) and [add the SSH key to your GitLab account](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account).
-{%- else -%}
-1. [Generate an SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key) and [add the SSH key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
-{%- endif %}
 1. Configure SSH to automatically load your SSH keys:
     ```sh
     cat << EOF >> ~/.ssh/config
@@ -115,28 +110,6 @@ import {{ cookiecutter.__project_name_snake_case }}
 <details>
 <summary>4. Configure Poetry to use the private package repository</summary>
 
-{% if cookiecutter.continuous_integration == "GitLab" -%}
-1. [Create a personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token) with the `api` scope and use it to [add your private package repository credentials to your Poetry's `auth.toml` file](https://python-poetry.org/docs/repositories/#configuring-credentials):
-    ```toml
-    # Linux:   ~/.config/pypoetry/auth.toml
-    # macOS:   ~/Library/Application Support/pypoetry/auth.toml
-    # Windows: C:\Users\%USERNAME%\AppData\Roaming\pypoetry\auth.toml
-    [http-basic.{{ cookiecutter.private_package_repository_name|slugify }}]
-    username = "{personal access token name}"
-    password = "{personal access token}"
-    ```
-{%- else -%}
-1. [Add your private package repository credentials to your Poetry's `auth.toml` file](https://python-poetry.org/docs/repositories/#configuring-credentials):
-    ```toml
-    # Linux:   ~/.config/pypoetry/auth.toml
-    # macOS:   ~/Library/Application Support/pypoetry/auth.toml
-    # Windows: C:\Users\%USERNAME%\AppData\Roaming\pypoetry\auth.toml
-    [http-basic.{{ cookiecutter.private_package_repository_name|slugify }}]
-    username = "{username}"
-    password = "{password}"
-    ```
-{%- endif %}
-
 </details>
 {%- endif %}
 
@@ -146,9 +119,6 @@ import {{ cookiecutter.__project_name_snake_case }}
 <summary>Development environments</summary>
 
 The following development environments are supported:
-{% if cookiecutter.continuous_integration == "GitHub" %}
-1. ⭐️ _GitHub Codespaces_: click on _Code_ and select _Create codespace_ to start a Dev Container with [GitHub Codespaces](https://github.com/features/codespaces).
-{%- endif %}
 1. ⭐️ _Dev Container (with container volume)_: click on [Open in Dev Containers](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url={{ cookiecutter.project_url.replace("https://", "git@").replace(".com/", ".com:") if cookiecutter.private_package_repository_url else cookiecutter.project_url }}) to clone this repository in a container volume and create a Dev Container with VS Code.
 1. _Dev Container_: clone this repository, open it with VS Code, and run <kbd>Ctrl/⌘</kbd> + <kbd>⇧</kbd> + <kbd>P</kbd> → _Dev Containers: Reopen in Container_.
 1. _PyCharm_: clone this repository, open it with PyCharm, and [configure Docker Compose as a remote interpreter](https://www.jetbrains.com/help/pycharm/using-docker-compose-as-a-remote-interpreter.html#docker-compose-remote) with the `dev` service.
