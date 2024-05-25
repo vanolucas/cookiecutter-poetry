@@ -39,6 +39,9 @@ typer = { extras = ["all"], version = ">=0.12.0" }
 {%- if cookiecutter.with_fastapi_api|int %}
 uvicorn = { extras = ["standard"], version = ">=0.29.0" }
 {%- endif %}
+{%- if cookiecutter.with_streamlit %}
+streamlit = "^1.34.0"
+{%- endif %}
 
 [tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 {%- if cookiecutter.with_conventional_commits|int %}
@@ -204,10 +207,33 @@ convention = "{{ cookiecutter.__docstring_style|lower }}"
 {%- elif cookiecutter.project_type == "app" %}
 
   [tool.poe.tasks.app]
-  help = "Serve the app"
+  help = "Serve the{% if cookiecutter.with_streamlit %} Streamlit{% endif %} app"
 
     [[tool.poe.tasks.app.sequence]]
     cmd = "echo 'Serving app...'"
+    {%- if cookiecutter.with_streamlit %}
+
+    [[tool.poe.tasks.app.sequence]]
+    cmd = """
+      streamlit run
+        --browser.gatherUsageStats false
+        --server.address $host
+        --server.port $port
+        src/{{ cookiecutter.__project_name_snake_case }}/app.py
+    """
+
+    [[tool.poe.tasks.app.args]]
+    help = "Bind socket to this host (default: 0.0.0.0)"
+    name = "host"
+    options = ["--host"]
+    default = "0.0.0.0"
+
+    [[tool.poe.tasks.app.args]]
+    help = "Bind socket to this port (default: 8000)"
+    name = "port"
+    options = ["--port"]
+    default = "8000"
+    {%- endif %}
 {%- endif %}
 
   [tool.poe.tasks.docs]

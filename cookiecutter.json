@@ -15,6 +15,7 @@
   ],
   "with_conventional_commits": "{% if cookiecutter.development_environment == 'simple' %}0{% else %}1{% endif %}",
   "with_fastapi_api": "0",
+  "with_streamlit": false,
   "with_typer_cli": "0",
   "private_package_repository_name": "",
   "private_package_repository_url": "",
