@@ -13,6 +13,12 @@
             ],
             "settings": {
                 "editor.formatOnSave": true,
+                "[json]": {
+                    "editor.formatOnSave": false
+                },
+                "[markdown]": {
+                    "editor.formatOnSave": false
+                },
                 "[toml]": {
                     "editor.formatOnSave": false
                 },
