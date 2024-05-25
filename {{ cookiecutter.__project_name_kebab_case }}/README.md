@@ -59,6 +59,7 @@ import {{ cookiecutter.__project_name_snake_case }}
 <summary>1. Set up Git to use SSH</summary>
 
 1. Configure SSH to automatically load your SSH keys:
+
     ```sh
     cat << EOF >> ~/.ssh/config
     
@@ -78,6 +79,7 @@ import {{ cookiecutter.__project_name_snake_case }}
 1. [Install Docker Desktop](https://www.docker.com/get-started).
     - _Linux only_:
         - Export your user's user id and group id so that [files created in the Dev Container are owned by your user](https://github.com/moby/moby/issues/3206):
+
             ```sh
             cat << EOF >> ~/.bashrc
             
@@ -119,6 +121,7 @@ import {{ cookiecutter.__project_name_snake_case }}
 <summary>Development environments</summary>
 
 The following development environments are supported:
+
 1. ⭐️ _Dev Container (with container volume)_: click on [Open in Dev Containers](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url={{ cookiecutter.project_url.replace("https://", "git@").replace(".com/", ".com:") if cookiecutter.private_package_repository_url else cookiecutter.project_url }}) to clone this repository in a container volume and create a Dev Container with VS Code.
 1. _Dev Container_: clone this repository, open it with VS Code, and run <kbd>Ctrl/⌘</kbd> + <kbd>⇧</kbd> + <kbd>P</kbd> → _Dev Containers: Reopen in Container_.
 1. _PyCharm_: clone this repository, open it with PyCharm, and [configure Docker Compose as a remote interpreter](https://www.jetbrains.com/help/pycharm/using-docker-compose-as-a-remote-interpreter.html#docker-compose-remote) with the `dev` service.
@@ -134,10 +137,10 @@ The following development environments are supported:
 - Run `poe` from within the development environment to print a list of [Poe the Poet](https://github.com/nat-n/poethepoet) tasks available to run on this project.
     - Run `poe lint` to perform all code checks.
     - Run `poe test` to run all Pytest unit tests.
-- Run `poetry install` from within the development environment to read the `pyproject.toml` file, resolve the dependencies and install them.
 - Run `poetry add {package}` from within the development environment to install a run time dependency and add it to `pyproject.toml` and `poetry.lock`. Add `--group test` or `--group dev` to install a CI or development dependency, respectively.
 - Run `poetry update` from within the development environment to upgrade all dependencies to the latest versions allowed by `pyproject.toml`.
 {%- if cookiecutter.with_conventional_commits|int %}
+- Run `poetry install` from within the development environment to read the `pyproject.toml` file, resolve the dependencies and install them.
 - Run `cz bump` to bump the {{ cookiecutter.project_type }}'s version, update the `CHANGELOG.md`, and create a git tag.
 {%- endif %}
 

@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {%- if cookiecutter.with_streamlit_app %}
+        {
+            "name": "Streamlit app debug",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "streamlit",
+            "args": [
+                "run",
+                "--browser.gatherUsageStats",
+                "false",
+                "--server.address",
+                "0.0.0.0",
+                "--server.port",
+                "8000",
+                "src/{{ cookiecutter.__project_name_snake_case }}/app.py"
+            ],
+            "justMyCode": true
+        },
+        {%- endif %}
+        {
+            "name": "Python Debugger: Python File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}"
+        }
+    ]
+}
