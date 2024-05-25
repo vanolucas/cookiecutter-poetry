@@ -8,7 +8,7 @@
   "project_url": "https://github.com/user/my-{{ cookiecutter.project_type }}",
   "author_name": "John Smith",
   "author_email": "john@example.com",
-  "python_version": "{% if cookiecutter.project_type == 'app' %}3.12{% else %}3.10{% endif %}",
+  "python_version": "3.12",
   "development_environment": [
     "simple",
     "strict"
