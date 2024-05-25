@@ -115,7 +115,7 @@ import {{ cookiecutter.__project_name_snake_case }}
 
 </details>
 
-<details open>
+<details>
 <summary>Development environments</summary>
 
 The following development environments are supported:
@@ -126,12 +126,14 @@ The following development environments are supported:
 
 </details>
 
-<details>
+<details open>
 <summary>Developing</summary>
 {% if cookiecutter.with_conventional_commits|int %}
 - This project follows the [Conventional Commits](https://www.conventionalcommits.org/) standard to automate [Semantic Versioning](https://semver.org/) and [Keep A Changelog](https://keepachangelog.com/) with [Commitizen](https://github.com/commitizen-tools/commitizen).
 {%- endif %}
 - Run `poe` from within the development environment to print a list of [Poe the Poet](https://github.com/nat-n/poethepoet) tasks available to run on this project.
+    - Run `poe lint` to perform all code checks.
+    - Run `poe test` to run all Pytest unit tests.
 - Run `poetry install` from within the development environment to read the `pyproject.toml` file, resolve the dependencies and install them.
 - Run `poetry add {package}` from within the development environment to install a run time dependency and add it to `pyproject.toml` and `poetry.lock`. Add `--group test` or `--group dev` to install a CI or development dependency, respectively.
 - Run `poetry update` from within the development environment to upgrade all dependencies to the latest versions allowed by `pyproject.toml`.
