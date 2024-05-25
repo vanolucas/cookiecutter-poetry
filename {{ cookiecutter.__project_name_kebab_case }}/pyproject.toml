@@ -33,14 +33,14 @@ gunicorn = ">=21.2.0"
 poethepoet = ">=0.25.0"
 {%- endif %}
 python = ">={{ cookiecutter.python_version }},<4.0"
+{%- if cookiecutter.with_streamlit_app %}
+streamlit = "^1.34.0"
+{%- endif %}
 {%- if cookiecutter.with_typer_cli|int %}
 typer = { extras = ["all"], version = ">=0.12.0" }
 {%- endif %}
 {%- if cookiecutter.with_fastapi_api|int %}
 uvicorn = { extras = ["standard"], version = ">=0.29.0" }
-{%- endif %}
-{%- if cookiecutter.with_streamlit %}
-streamlit = "^1.34.0"
 {%- endif %}
 
 [tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
@@ -207,11 +207,11 @@ convention = "{{ cookiecutter.__docstring_style|lower }}"
 {%- elif cookiecutter.project_type == "app" %}
 
   [tool.poe.tasks.app]
-  help = "Serve the{% if cookiecutter.with_streamlit %} Streamlit{% endif %} app"
+  help = "Serve the{% if cookiecutter.with_streamlit_app %} Streamlit{% endif %} app"
 
     [[tool.poe.tasks.app.sequence]]
     cmd = "echo 'Serving app...'"
-    {%- if cookiecutter.with_streamlit %}
+    {%- if cookiecutter.with_streamlit_app %}
 
     [[tool.poe.tasks.app.sequence]]
     cmd = """

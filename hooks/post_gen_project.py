@@ -4,7 +4,7 @@ import os
 project_name = "{{ cookiecutter.__project_name_snake_case }}"
 development_environment = "{{ cookiecutter.development_environment }}"
 with_fastapi_api = int("{{ cookiecutter.with_fastapi_api }}")
-with_streamlit: bool = {{ cookiecutter.with_streamlit }}
+with_streamlit_app: bool = {{ cookiecutter.with_streamlit_app }}
 with_typer_cli = int("{{ cookiecutter.with_typer_cli }}")
 is_application = "{{ cookiecutter.project_type == 'app' }}" == "True"
 
@@ -19,7 +19,7 @@ if not with_fastapi_api:
     os.remove("tests/test_api.py")
 
 # Remove Streamlit app if not selected.
-if not with_streamlit:
+if not with_streamlit_app:
     os.remove(f"src/{project_name}/app.py")
 
 # Remove Typer if not selected.
