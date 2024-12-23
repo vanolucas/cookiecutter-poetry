@@ -47,3 +47,10 @@ app.add_middleware(
 async def echo_endpoint(request: EchoRequest) -> EchoResponse:
     """Echo the provided message."""
     return EchoResponse(message=request.message)
+
+
+# Uvicorn entry point so that we can also just run this file to serve the API.
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8000)
