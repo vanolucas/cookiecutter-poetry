@@ -1,29 +1,28 @@
 {
+    "version": "0.2.0",
     "configurations": [
-        {%- if cookiecutter.with_streamlit_app %}
         {
-            "name": "Streamlit app debug",
+            "name": "API [debug]",
             "type": "debugpy",
             "request": "launch",
-            "module": "streamlit",
-            "args": [
-                "run",
-                "--browser.gatherUsageStats",
-                "false",
-                "--server.address",
-                "0.0.0.0",
-                "--server.port",
-                "8000",
-                "src/{{ cookiecutter.__project_name_snake_case }}/app.py"
-            ],
+            "program": "src/{{ cookiecutter.__project_name_snake_case }}/api/api.py",
             "justMyCode": true
         },
-        {%- endif %}
         {
-            "name": "Python Debugger: Python File",
+            "name": "Python file [debug]",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}"
+        },
+        {
+            "name": "Pytest [debug]",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }

@@ -4,21 +4,12 @@ services:
     build:
       context: .
       target: dev
-      {%- if cookiecutter.private_package_repository_name %}
-      secrets:
-        - poetry-auth
-      {%- endif %}
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:-{{ cookiecutter.python_version }}}
         UID: ${UID:-1000}
         GID: ${GID:-1000}
-    {%- if not cookiecutter.private_package_repository_name %}
     environment:
       - POETRY_PYPI_TOKEN_PYPI
-    {%- else %}
-    secrets:
-      - poetry-auth
-    {%- endif %}
     volumes:
       - ..:/workspaces
     {%- if cookiecutter.with_postgresql %}
@@ -35,42 +26,31 @@ services:
       [
         "sh",
         "-c",
-        "sudo chown user $$SSH_AUTH_SOCK && cp --update /opt/build/poetry/poetry.lock /workspaces/{{ cookiecutter.__project_name_kebab_case }}/ && mkdir -p /workspaces/{{ cookiecutter.__project_name_kebab_case }}/.git/hooks/ && cp --update /opt/build/git/* /workspaces/{{ cookiecutter.__project_name_kebab_case }}/.git/hooks/ && zsh"
+        "sudo chown user $$SSH_AUTH_SOCK && cp --update /opt/build/poetry/poetry.lock /workspaces/{{ cookiecutter.__project_name_kebab_case }}/ && mkdir -p /workspaces/{{ cookiecutter.__project_name_kebab_case }}/.git/hooks/ && cp --update /opt/build/git/* /workspaces/{{ cookiecutter.__project_name_kebab_case }}/.git/hooks/ && bash"
       ]
     environment:
-      {%- if not cookiecutter.private_package_repository_name %}
       - POETRY_PYPI_TOKEN_PYPI
-      {%- endif %}
       - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
-    {%- if cookiecutter.with_fastapi_api|int %}
     ports:
-      - "8000"
-    {%- endif %}
+      - "8000"  # API port.
     volumes:
       - ~/.gitconfig:/etc/gitconfig
       - ~/.ssh/known_hosts:/home/user/.ssh/known_hosts
       - ${SSH_AGENT_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/run/host-services/ssh-auth.sock
     profiles:
       - dev
-  {%- if cookiecutter.project_type == "app" %}
 
-  app:
+  api:
     build:
       context: .
-      target: app
-      {%- if cookiecutter.private_package_repository_name %}
-      secrets:
-        - poetry-auth
-      {%- endif %}
+      target: api
     tty: true
-    {%- if cookiecutter.with_fastapi_api|int %}
-    ports:
-      - "8000:8000"
-    {%- endif %}
+    restart: unless-stopped
     profiles:
-      - app
-  {%- endif %}
+      - api
   {%- if cookiecutter.with_postgresql %}
+    networks:
+      - net
 
   {{ cookiecutter.postgresql_server }}:
     image: postgres:latest
@@ -78,7 +58,7 @@ services:
     volumes:
       - {{ cookiecutter.postgresql_server }}:/var/lib/postgresql/data
     ports:
-      - "127.0.0.1:{{ cookiecutter.postgresql_forward_port }}:5432"
+      - "{{ cookiecutter.postgresql_forward_port }}:5432"
     networks:
       - net
     environment:
@@ -94,18 +74,12 @@ services:
     depends_on:
       - {{ cookiecutter.postgresql_server }}
     ports:
-      - "127.0.0.1:{{ cookiecutter.adminer_forward_port }}:8080"
+      - "{{ cookiecutter.adminer_forward_port }}:8080"
     networks:
       - net
     environment:
       ADMINER_DEFAULT_SERVER: {{ cookiecutter.postgresql_server }}
   {%- endif %}
-{%- if cookiecutter.private_package_repository_name %}
-
-secrets:
-  poetry-auth:
-    file: "${POETRY_AUTH_TOML_PATH:-~/Library/Application Support/pypoetry/auth.toml}"
-{%- endif %}
 {%- if cookiecutter.with_postgresql %}
 
 volumes:

@@ -1,6 +1,9 @@
 {
     "name": "{{ cookiecutter.__project_name_kebab_case }}",
-    "dockerComposeFile": "../docker-compose.yml",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "../docker-compose.dev.yml"
+    ],
     "service": "devcontainer",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/",
     "remoteUser": "user",
@@ -9,11 +12,7 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "bierner.markdown-mermaid",
-                "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
                 "charliermarsh.ruff",
-                "DavidAnson.vscode-markdownlint",
-                "mechatroner.rainbow-csv",
                 "ms-python.mypy-type-checker",
                 "ms-python.python",
                 "ms-toolsai.jupyter",
@@ -55,13 +54,11 @@
                 "python.terminal.activateEnvironment": false,
                 "python.testing.pytestEnabled": true,
                 "ruff.importStrategy": "fromEnvironment",
-                {%- if cookiecutter.development_environment == "strict" %}
                 "ruff.logLevel": "warning",
-                {%- endif %}
-                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.defaultProfile.linux": "bash",
                 "terminal.integrated.profiles.linux": {
-                    "zsh": {
-                        "path": "/usr/bin/zsh"
+                    "bash": {
+                        "path": "/usr/bin/bash"
                     }
                 }
             }
