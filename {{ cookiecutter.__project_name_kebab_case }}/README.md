@@ -47,4 +47,6 @@ Automated changelog with [Commitizen](https://github.com/commitizen-tools/commit
 
 ### Commit
 
-Commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
+- Commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
+- You can skip the commit hooks (that run the code checks) using `--no-verify`.
+    - Example: `git commit -m "feat: some feature" --no-verify`
