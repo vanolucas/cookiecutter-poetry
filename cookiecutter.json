@@ -1,34 +1,26 @@
 {
-  "project_type": [
-    "package",
-    "app"
-  ],
-  "project_name": "{% if cookiecutter.project_type == 'app' %}My App{% else %}My Package{% endif %}",
-  "project_description": "A Python {{ cookiecutter.project_type }} that reticulates splines.",
-  "project_url": "https://github.com/user/my-{{ cookiecutter.project_type }}",
-  "author_name": "John Smith",
-  "author_email": "john@example.com",
-  "python_version": "3.12",
-  "development_environment": [
-    "simple",
-    "strict"
-  ],
-  "with_conventional_commits": "{% if cookiecutter.development_environment == 'simple' %}0{% else %}1{% endif %}",
-  "with_fastapi_api": "0",
-  "with_streamlit_app": false,
-  "with_typer_cli": "0",
-  "private_package_repository_name": "",
-  "private_package_repository_url": "",
-  "with_postgresql": false,
-  "postgresql_server": "db",
-  "postgresql_user": "{{ cookiecutter.postgresql_server }}",
-  "postgresql_password": "{{ cookiecutter.postgresql_user }}",
-  "postgresql_db_name": "db",
-  "postgresql_forward_port": "5432",
-  "with_adminer": false,
-  "adminer_forward_port": "51003",
-  "__docker_image": "python:$PYTHON_VERSION-slim",
-  "__docstring_style": "NumPy",
-  "__project_name_kebab_case": "{{ cookiecutter.project_name|slugify }}",
-  "__project_name_snake_case": "{{ cookiecutter.project_name|slugify(separator='_') }}"
+    "project_name": "My App",
+    "__project_name_kebab_case": "{{ cookiecutter.project_name|slugify }}",
+    "__project_name_snake_case": "{{ cookiecutter.project_name|slugify(separator='_') }}",
+
+    "project_description": "A Python app that...",
+
+    "author_name": "vanolucas",
+    "author_email": "10572472+{{ cookiecutter.author_name }}@users.noreply.github.com",
+    "project_url": "https://github.com/{{ cookiecutter.author_name }}/{{ cookiecutter.__project_name_kebab_case }}",
+    
+    "python_version": "3.13",
+
+    "with_postgresql": false,
+    "postgresql_server": "db",
+    "postgresql_user": "{{ cookiecutter.postgresql_server }}",
+    "postgresql_password": "{{ cookiecutter.postgresql_user }}",
+    "postgresql_db_name": "db",
+    "postgresql_forward_port": "127.0.0.1:5432",
+
+    "with_adminer": false,
+    "adminer_forward_port": "127.0.0.1:51003",
+    
+    "__docker_image": "python:$PYTHON_VERSION-slim",
+    "__docstring_style": "NumPy"
 }

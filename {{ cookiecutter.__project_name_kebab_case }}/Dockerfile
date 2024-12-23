@@ -1,17 +1,19 @@
-# syntax=docker/dockerfile:1
+# Args.
 ARG PYTHON_VERSION={{ cookiecutter.python_version }}
+
+
+
+# Base image.
 FROM {{ cookiecutter.__docker_image }} AS base
 
 # Remove docker-clean so we can keep the apt cache in Docker build cache.
 RUN rm /etc/apt/apt.conf.d/docker-clean
-{%- if cookiecutter.development_environment == "strict" %}
 
 # Configure Python to print tracebacks on crash [1], and to not buffer stdout and stderr [2].
 # [1] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONFAULTHANDLER
 # [2] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED
 ENV PYTHONFAULTHANDLER 1
 ENV PYTHONUNBUFFERED 1
-{%- endif %}
 
 # Create a non-root user and switch to it [1].
 # [1] https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
@@ -22,22 +24,23 @@ RUN groupadd --gid $GID user && \
     chown user /opt/
 USER user
 
-# Create and activate a virtual environment.
+# Create and activate a Python virtual environment.
 ENV VIRTUAL_ENV /opt/{{ cookiecutter.__project_name_kebab_case }}-env
 ENV PATH $VIRTUAL_ENV/bin:$PATH
 RUN python -m venv $VIRTUAL_ENV
 
-# Set the working directory.
+# Set the working directory: our project's directory.
 WORKDIR /workspaces/{{ cookiecutter.__project_name_kebab_case }}/
 
 
 
+# Poetry image.
 FROM base AS poetry
 
 USER root
 
 # Install Poetry in separate venv so it doesn't pollute the main venv.
-ENV POETRY_VERSION 1.8.0
+ENV POETRY_VERSION 1.8
 ENV POETRY_VIRTUAL_ENV /opt/poetry-env
 RUN --mount=type=cache,target=/root/.cache/pip/ \
     python -m venv $POETRY_VIRTUAL_ENV && \
@@ -54,82 +57,56 @@ USER user
 
 # Install the run time Python dependencies in the virtual environment.
 COPY --chown=user:user poetry.lock* pyproject.toml /workspaces/{{ cookiecutter.__project_name_kebab_case }}/
-RUN mkdir -p /home/user/.cache/pypoetry/ && mkdir -p /home/user/.config/pypoetry/ && \
-    mkdir -p src/{{ cookiecutter.__project_name_snake_case }}/ && touch src/{{ cookiecutter.__project_name_snake_case }}/__init__.py && touch README.md
+RUN mkdir -p /home/user/.cache/pypoetry/ && \
+    mkdir -p /home/user/.config/pypoetry/ && \
+    mkdir -p src/{{ cookiecutter.__project_name_snake_case }}/ && \
+    touch src/{{ cookiecutter.__project_name_snake_case }}/__init__.py && \
+    touch README.md
 RUN --mount=type=cache,uid=$UID,gid=$GID,target=/home/user/.cache/pypoetry/ \
-    {%- if cookiecutter.private_package_repository_name %}
-    --mount=type=secret,id=poetry-auth,uid=$UID,gid=$GID,target=/home/user/.config/pypoetry/auth.toml \
-    {%- endif %}
     poetry install --only main --all-extras --no-interaction
 
 
 
+# Dev image.
 FROM poetry AS dev
 
-# Install development tools: curl, git, gpg, ssh, starship, sudo, vim, and zsh.
+# Install development tools: curl, nano, git, gpg, ssh, starship, sudo.
 USER root
 RUN --mount=type=cache,target=/var/cache/apt/ \
     --mount=type=cache,target=/var/lib/apt/ \
     apt-get update && \
-    apt-get install --no-install-recommends --yes curl git gnupg ssh sudo vim zsh && \
+    apt-get install --no-install-recommends --yes curl nano git gnupg ssh sudo && \
     sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- "--yes" && \
-    usermod --shell /usr/bin/zsh user && \
     echo 'user ALL=(root) NOPASSWD:ALL' > /etc/sudoers.d/user && chmod 0440 /etc/sudoers.d/user
 RUN git config --system --add safe.directory '*'
 USER user
 
 # Install the development Python dependencies in the virtual environment.
 RUN --mount=type=cache,uid=$UID,gid=$GID,target=/home/user/.cache/pypoetry/ \
-    {%- if cookiecutter.private_package_repository_name %}
-    --mount=type=secret,id=poetry-auth,uid=$UID,gid=$GID,target=/home/user/.config/pypoetry/auth.toml \
-    {%- endif %}
     poetry install --all-extras --no-interaction
 
-# Persist output generated during docker build so that we can restore it in the dev container.
+# Setup git pre-commit hook.
 COPY --chown=user:user .pre-commit-config.yaml /workspaces/{{ cookiecutter.__project_name_kebab_case }}/
 RUN mkdir -p /opt/build/poetry/ && cp poetry.lock /opt/build/poetry/ && \
     git init && pre-commit install --install-hooks && \
     mkdir -p /opt/build/git/ && cp .git/hooks/commit-msg .git/hooks/pre-commit /opt/build/git/
 
-# Configure the non-root user's shell.
-ENV ANTIDOTE_VERSION 1.8.6
-RUN git clone --branch v$ANTIDOTE_VERSION --depth=1 https://github.com/mattmc3/antidote.git ~/.antidote/ && \
-    echo 'zsh-users/zsh-syntax-highlighting' >> ~/.zsh_plugins.txt && \
-    echo 'zsh-users/zsh-autosuggestions' >> ~/.zsh_plugins.txt && \
-    echo 'source ~/.antidote/antidote.zsh' >> ~/.zshrc && \
-    echo 'antidote load' >> ~/.zshrc && \
-    echo 'eval "$(starship init zsh)"' >> ~/.zshrc && \
-    echo 'HISTFILE=~/.history/.zsh_history' >> ~/.zshrc && \
-    echo 'HISTSIZE=1000' >> ~/.zshrc && \
-    echo 'SAVEHIST=1000' >> ~/.zshrc && \
-    echo 'setopt share_history' >> ~/.zshrc && \
-    echo 'bindkey "^[[A" history-beginning-search-backward' >> ~/.zshrc && \
-    echo 'bindkey "^[[B" history-beginning-search-forward' >> ~/.zshrc && \
-    mkdir ~/.history/ && \
-    zsh -c 'source ~/.zshrc'
-{%- if cookiecutter.private_package_repository_name %}
-
-# Enable Poetry to read the private package repository credentials.
-RUN ln -s /run/secrets/poetry-auth /home/user/.config/pypoetry/auth.toml
-{%- endif %}
-{%- if cookiecutter.project_type == "app" %}
+# Configure the non-root user's shell with Starship prompt.
+RUN echo 'eval "$(starship init bash)"' >> ~/.bashrc && \
+    starship preset no-nerd-font -o ~/.config/starship.toml && \
+    bash -c 'source ~/.bashrc'
 
 
 
-FROM base AS app
+# API image.
+FROM base AS api
 
 # Copy the virtual environment from the poetry stage.
 COPY --from=poetry $VIRTUAL_ENV $VIRTUAL_ENV
 
-# Copy the {{ cookiecutter.project_type }} source code to the working directory.
+# Copy the API source code to the working directory.
 COPY --chown=user:user . .
 
-# Expose the app.
-{%- if cookiecutter.with_typer_cli|int %}
-ENTRYPOINT ["/opt/{{ cookiecutter.__project_name_kebab_case }}-env/bin/{{ cookiecutter.__project_name_kebab_case }}"]
-CMD []
-{%- else %}
+# Expose the API.
 ENTRYPOINT ["/opt/{{ cookiecutter.__project_name_kebab_case }}-env/bin/poe"]
-CMD [{% if cookiecutter.with_fastapi_api|int %}"api"{% else %}"app"{% endif %}]
-{%- endif %}
-{%- endif %}
+CMD ["api"]

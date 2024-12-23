@@ -2,9 +2,6 @@
 htmlcov/
 reports/
 
-# cruft
-*.rej
-
 # direnv
 .envrc
 
@@ -52,4 +49,5 @@ __pycache__/
 
 # VS Code
 .vscode/*
+# Include VS Code launch configurations.
 !.vscode/launch.json

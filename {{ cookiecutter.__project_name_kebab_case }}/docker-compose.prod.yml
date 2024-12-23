@@ -1,0 +1,8 @@
+services:
+
+  api:
+    extends:
+      file: ./docker-compose.yml
+      service: api
+    ports:
+      - "8000:8000"
