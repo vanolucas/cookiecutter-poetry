@@ -16,7 +16,7 @@ ROUTES_PREFIX = "/api/v1"
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     """Handle FastAPI startup and shutdown events."""
     # Startup events:
     # - Remove all handlers associated with the root logger object.
