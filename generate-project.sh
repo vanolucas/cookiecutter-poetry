@@ -6,7 +6,7 @@
 TARGET_DIR=$1
 
 # Name of the Docker image to create.
-IMAGE_NAME=cookielu
+IMAGE_NAME=cookiecutter-poetry
 
 # Get current user and group IDs.
 UID=$(id -u)
