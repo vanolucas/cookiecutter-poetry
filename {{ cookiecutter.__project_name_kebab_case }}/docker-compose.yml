@@ -12,10 +12,6 @@ services:
       - POETRY_PYPI_TOKEN_PYPI
     volumes:
       - ..:/workspaces
-    {%- if cookiecutter.with_postgresql %}
-    networks:
-      - net
-    {%- endif %}
 
   dev:
     extends: devcontainer
@@ -48,43 +44,3 @@ services:
     restart: unless-stopped
     profiles:
       - api
-  {%- if cookiecutter.with_postgresql %}
-    networks:
-      - net
-
-  {{ cookiecutter.postgresql_server }}:
-    image: postgres:latest
-    restart: unless-stopped
-    volumes:
-      - {{ cookiecutter.postgresql_server }}:/var/lib/postgresql/data
-    ports:
-      - "{{ cookiecutter.postgresql_forward_port }}:5432"
-    networks:
-      - net
-    environment:
-      POSTGRES_USER: ${POSTGRESQL_USER}
-      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
-      POSTGRES_DB: ${POSTGRESQL_DB_NAME}
-  {%- endif %}
-  {%- if cookiecutter.with_adminer %}
-
-  adminer:
-    image: adminer:latest
-    restart: unless-stopped
-    depends_on:
-      - {{ cookiecutter.postgresql_server }}
-    ports:
-      - "{{ cookiecutter.adminer_forward_port }}:8080"
-    networks:
-      - net
-    environment:
-      ADMINER_DEFAULT_SERVER: {{ cookiecutter.postgresql_server }}
-  {%- endif %}
-{%- if cookiecutter.with_postgresql %}
-
-volumes:
-  {{ cookiecutter.postgresql_server }}:
-
-networks:
-  net:
-{%- endif %}
