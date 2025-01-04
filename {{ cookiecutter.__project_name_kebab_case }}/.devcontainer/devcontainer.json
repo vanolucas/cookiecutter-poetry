@@ -13,6 +13,9 @@
         "vscode": {
             "extensions": [
                 "charliermarsh.ruff",
+                {%- if cookiecutter.with_postgresql %}
+                "ckolkman.vscode-postgres",
+                {%- endif %}
                 "ms-python.mypy-type-checker",
                 "ms-python.python",
                 "ms-toolsai.jupyter",
