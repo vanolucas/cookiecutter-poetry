@@ -21,5 +21,4 @@ docker run -it --rm \
     --name $IMAGE_NAME \
     $IMAGE_NAME &&
 
-# Navigate to the target directory where the project got created.
-cd $TARGET_DIR
+echo "Done."
