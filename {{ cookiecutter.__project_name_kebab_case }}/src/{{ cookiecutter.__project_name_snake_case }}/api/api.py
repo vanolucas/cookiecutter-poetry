@@ -14,6 +14,11 @@ from {{ cookiecutter.__project_name_snake_case }}.api.response import EchoRespon
 API_TITLE = "{{ cookiecutter.project_name }} API"
 ROUTES_PREFIX = "/api/v1"
 
+# Initialize this module's logger.
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
@@ -46,6 +51,7 @@ app.add_middleware(
 @app.post("/echo")
 async def echo_endpoint(request: EchoRequest) -> EchoResponse:
     """Echo the provided message."""
+    logger.info("Generating an echo.")
     return EchoResponse(message=request.message)
 
 

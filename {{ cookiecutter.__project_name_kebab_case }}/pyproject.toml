@@ -149,6 +149,16 @@ convention = "{{ cookiecutter.__docstring_style|lower }}"
     name = "dev"
     options = ["--dev"]
 
+  [tool.poe.tasks.app]
+  help = "Run the App"
+  envfile = ".env"
+
+    [[tool.poe.tasks.app.sequence]]
+    cmd = "echo 'Running app...'"
+
+    [[tool.poe.tasks.app.sequence]]
+    script = "{{ cookiecutter.__project_name_snake_case }}.main:main"
+
   [tool.poe.tasks.docs]
   help = "Generate this API's docs"
   cmd = """

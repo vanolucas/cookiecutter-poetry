@@ -36,6 +36,15 @@ services:
     profiles:
       - dev
 
+  app:
+    build:
+      context: .
+      target: app
+    tty: true
+    restart: unless-stopped
+    profiles:
+      - app
+
   api:
     build:
       context: .

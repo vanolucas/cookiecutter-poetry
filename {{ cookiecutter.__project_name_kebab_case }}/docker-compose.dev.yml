@@ -9,6 +9,15 @@ services:
       - net
     {%- endif %}
 
+  app:
+    extends:
+      file: ./docker-compose.yml
+      service: app
+  {%- if cookiecutter.with_postgresql %}
+    networks:
+      - net
+  {%- endif %}
+
   api:
     extends:
       file: ./docker-compose.yml
