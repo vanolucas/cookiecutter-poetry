@@ -1,6 +1,6 @@
 # 🍪 cookiecutter-poetry
 
-A cookiecutter to quickly generate new VS Code Python projects with Poetry, MyPy, Ruff and other development tools ready to go.
+A cookiecutter to quickly generate new VS Code **Python** and **FastAPI** projects with Poetry, MyPy, Ruff and other development tools ready to go.
 
 ## 🎁 Features
 

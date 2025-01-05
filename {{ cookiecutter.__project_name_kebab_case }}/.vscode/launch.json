@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "App [debug]",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/{{ cookiecutter.__project_name_snake_case }}/main.py",
+            "justMyCode": true
+        },
+        {
             "name": "API [debug]",
             "type": "debugpy",
             "request": "launch",

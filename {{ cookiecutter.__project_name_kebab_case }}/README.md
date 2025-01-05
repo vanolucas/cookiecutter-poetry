@@ -4,10 +4,26 @@
 
 ## ✨ Using
 
-To serve this API, run:
+### Run the App
+
+To run this {{ cookiecutter.project_name }} app, run:
 
 ```sh
-./start.prod.sh
+./start.sh app prod
+```
+
+This is equivalent to running the following inside the dev container:
+
+```sh
+poe app
+```
+
+### Serve the API
+
+To serve this {{ cookiecutter.project_name }} API, run:
+
+```sh
+./start.sh api prod
 ```
 
 This is equivalent to running the following inside the dev container:

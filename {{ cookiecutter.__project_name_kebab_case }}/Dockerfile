@@ -98,14 +98,23 @@ RUN echo 'eval "$(starship init bash)"' >> ~/.bashrc && \
 
 
 
-# API image.
-FROM base AS api
+# App image.
+FROM base AS app
 
 # Copy the virtual environment from the poetry stage.
 COPY --from=poetry $VIRTUAL_ENV $VIRTUAL_ENV
 
-# Copy the API source code to the working directory.
+# Copy the source code to the working directory.
 COPY --chown=user:user . .
+
+# Run the App.
+ENTRYPOINT ["/opt/{{ cookiecutter.__project_name_kebab_case }}-env/bin/poe"]
+CMD ["app"]
+
+
+
+# API image.
+FROM app AS api
 
 # Expose the API.
 ENTRYPOINT ["/opt/{{ cookiecutter.__project_name_kebab_case }}-env/bin/poe"]
