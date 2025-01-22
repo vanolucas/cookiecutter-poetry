@@ -4,7 +4,6 @@ import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-import coloredlogs
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,8 +26,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     # - Remove all handlers associated with the root logger object.
     for handler in logging.root.handlers:
         logging.root.removeHandler(handler)
-    # - Add coloredlogs' colored StreamHandler to the root logger.
-    coloredlogs.install()
     yield
     # Shutdown events.
 
