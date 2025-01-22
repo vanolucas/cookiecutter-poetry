@@ -40,7 +40,7 @@ FROM base AS poetry
 USER root
 
 # Install Poetry in separate venv so it doesn't pollute the main venv.
-ENV POETRY_VERSION 1.8
+ENV POETRY_VERSION 2.0.1
 ENV POETRY_VIRTUAL_ENV /opt/poetry-env
 RUN --mount=type=cache,target=/root/.cache/pip/ \
     python -m venv $POETRY_VIRTUAL_ENV && \
@@ -63,7 +63,7 @@ RUN mkdir -p /home/user/.cache/pypoetry/ && \
     touch src/{{ cookiecutter.__project_name_snake_case }}/__init__.py && \
     touch README.md
 RUN --mount=type=cache,uid=$UID,gid=$GID,target=/home/user/.cache/pypoetry/ \
-    poetry install --only main --all-extras --no-interaction
+    poetry install --without test,dev --all-extras --no-interaction
 
 
 
