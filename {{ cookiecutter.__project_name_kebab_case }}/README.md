@@ -66,7 +66,7 @@ Automated changelog with [Commitizen](https://github.com/commitizen-tools/commit
 One-liner to update all dependencies and commit:
 
 ```sh
-poetry update && poetry install && git add -- pyproject.toml poetry.lock && git commit -m "chore(deps): update"
+poetry update && poetry install && git commit -m "chore(deps): update" -- pyproject.toml poetry.lock
 ```
 
 ### Commit
