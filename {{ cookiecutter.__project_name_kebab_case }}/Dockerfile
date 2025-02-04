@@ -12,8 +12,8 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 # Configure Python to print tracebacks on crash [1], and to not buffer stdout and stderr [2].
 # [1] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONFAULTHANDLER
 # [2] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED
-ENV PYTHONFAULTHANDLER 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONFAULTHANDLER=1
+ENV PYTHONUNBUFFERED=1
 
 # Create a non-root user and switch to it [1].
 # [1] https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
@@ -24,9 +24,9 @@ RUN groupadd --gid $GID user && \
     chown user /opt/
 USER user
 
-# Create and activate a Python virtual environment.
-ENV VIRTUAL_ENV /opt/{{ cookiecutter.__project_name_kebab_case }}-env
-ENV PATH $VIRTUAL_ENV/bin:$PATH
+# Create and activate a virtual environment.
+ENV VIRTUAL_ENV=/opt/{{ cookiecutter.__project_name_kebab_case }}-env
+ENV PATH=$VIRTUAL_ENV/bin:$PATH
 RUN python -m venv $VIRTUAL_ENV
 
 # Set the working directory: our project's directory.
@@ -40,8 +40,8 @@ FROM base AS poetry
 USER root
 
 # Install Poetry in separate venv so it doesn't pollute the main venv.
-ENV POETRY_VERSION 2.0.1
-ENV POETRY_VIRTUAL_ENV /opt/poetry-env
+ENV POETRY_VERSION=2.0.1
+ENV POETRY_VIRTUAL_ENV=/opt/poetry-env
 RUN --mount=type=cache,target=/root/.cache/pip/ \
     python -m venv $POETRY_VIRTUAL_ENV && \
     $POETRY_VIRTUAL_ENV/bin/pip install poetry~=$POETRY_VERSION && \
