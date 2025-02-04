@@ -61,6 +61,14 @@ Automated changelog with [Commitizen](https://github.com/commitizen-tools/commit
 
 - `cz bump`: bumps the project version, updates the `CHANGELOG.md` and creates a git tag.
 
+### Update all dependencies
+
+One-liner to update all dependencies and commit:
+
+```sh
+poetry update && poetry install && git add -- pyproject.toml poetry.lock && git commit -m "chore(deps): update"
+```
+
 ### Commit
 
 - Commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
