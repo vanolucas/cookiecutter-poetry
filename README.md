@@ -23,7 +23,7 @@ A cookiecutter to quickly generate new VS Code **Python** and **FastAPI** projec
 
 To generate a new project directory inside the specified dir:
 
-```bash
+```sh
 ./generate-project.sh dir/where/project/dir/will/be/created
 ```
 
@@ -45,3 +45,27 @@ This will launch the cookiecutter project creation assistant in a Docker contain
     - `postgresql_forward_port`: host port to expose the PostgreSQL server on.
 - `with_adminer` [false, true]: whether or not to run an Adminer container alongside the dev container. Provides a Web UI to manage the PostgreSQL database.
     - `adminer_forward_port`: host port to expose the Adminer web UI on (only relevant when `with_adminer` is `true`).
+
+## 📥 Patch this template with changes from upstream repo
+
+Add the upstream repo as a new remote:
+
+```sh
+git remote add "upstream" git@github.com:superlinear-ai/poetry-cookiecutter.git
+```
+
+Create a new branch where we will pull the latest upstream changes:
+
+```sh
+git checkout -b upstream-updates
+```
+
+Pull changes from the upstream repo to the current branch:
+
+```sh
+git pull --no-rebase upstream main
+```
+
+A merge conflict may occur. Resolve the conflict then commit to conclude the merge.
+
+We can then open a pull request from the `upstream-updates` branch to `main`.
